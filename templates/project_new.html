@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Spy-Link | Novo Projeto</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+    <header class="topbar">
+        <div class="logo">Spy-Link</div>
+
+        <nav>
+            <a href="/">Dashboard</a>
+            <a href="/projects">Projetos / Capturas / Meus Links</a>
+        </nav>
+    </header>
+
+    <main class="container">
+
+        <section class="welcome">
+            <div>
+                <h1>Criar novo projeto</h1>
+                <p>Configure um novo link para sua plataforma.</p>
+            </div>
+        </section>
+
+        <section class="panel">
+
+            <div class="panel-header">
+                <h2>Informações do projeto</h2>
+                <p>Preencha os dados abaixo para criar seu projeto.</p>
+            </div>
+
+            <form method="post" action="/projects" style="padding: 24px;">
+
+                <div style="margin-bottom: 20px;">
+                    <label for="name">Nome do projeto</label>
+
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        required
+                        placeholder="Ex: Meu Projeto"
+                        style="display:block; width:100%; padding:12px; margin-top:8px;"
+                    >
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label for="slug">Slug do link</label>
+
+                    <input
+                        type="text"
+                        id="slug"
+                        name="slug"
+                        required
+                        placeholder="Ex: meu-projeto"
+                        style="display:block; width:100%; padding:12px; margin-top:8px;"
+                    >
+
+                    <small>Será usado no endereço do projeto.</small>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label for="destination_url">URL de destino</label>
+
+                    <input
+                        type="url"
+                        id="destination_url"
+                        name="destination_url"
+                        required
+                        placeholder="https://exemplo.com"
+                        style="display:block; width:100%; padding:12px; margin-top:8px;"
+                    >
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label for="description">Descrição</label>
+
+                    <textarea
+                        id="description"
+                        name="description"
+                        rows="4"
+                        placeholder="Descrição opcional"
+                        style="display:block; width:100%; padding:12px; margin-top:8px;"
+                    ></textarea>
+                </div>
+
+                <div style="margin-bottom: 24px;">
+                    <label>
+                        <input
+                            type="checkbox"
+                            name="location_enabled"
+                            checked
+                        >
+                        Ativar localização
+                    </label>
+                </div>
+
+                <div style="display:flex; gap:12px;">
+                    <button type="submit" class="button">
+                        Criar projeto
+                    </button>
+
+                    <a href="/projects" class="button">
+                        Cancelar
+                    </a>
+                </div>
+
+            </form>
+
+        </section>
+
+    </main>
+
+</body>
+</html>
+
+

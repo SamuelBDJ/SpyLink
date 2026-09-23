@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ project["name"] }} | Spy-Link</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+    <main class="container">
+
+        <section class="panel" style="max-width:600px; margin:80px auto;">
+
+            <div class="panel-header">
+
+                <h2>{{ project["name"] }}</h2>
+
+                {% if project["description"] %}
+                    <p>{{ project["description"] }}</p>
+                {% endif %}
+
+            </div>
+
+
+            <div style="padding:24px;">
+
+                <h3>Antes de continuar</h3>
+
+                <p>
+                    Este projeto pode solicitar sua localização,
+                    caso você autorize, para fins de funcionamento,
+                    segurança e estatísticas.
+                </p>
+
+                <p>
+                    O compartilhamento é opcional.
+                    Você pode continuar sem compartilhar sua localização.
+                </p>
+
+
+                {% if project["location_enabled"] %}
+
+                <!-- COMPARTILHAR LOCALIZAÇÃO -->
+
+                <button
+                    type="button"
+                    class="button"
+                    onclick="shareLocation()"
+                >
+                    Compartilhar minha localização
+                </button>
+
+
+                <!-- CONTINUAR SEM COMPARTILHAR -->
+
+                <form
+                    method="post"
+                    action="/p/{{ project['slug'] }}/continue"
+                    style="margin-top:12px;"
+                >
+
+                    <input
+                        type="hidden"
+                        name="consent_given"
+                        value="0"
+                    >
+
+                    <button type="submit" class="button">
+                        Continuar sem compartilhar
+                    </button>
+
+                </form>
+
+                {% else %}
+
+                <form
+                    method="post"
+                    action="/p/{{ project['slug'] }}/continue"
+                >
+
+                    <input
+                        type="hidden"
+                        name="consent_given"
+                        value="0"
+                    >
+
+                    <button type="submit" class="button">
+                        Continuar
+                    </button>
+
+                </form>
+
+                {% endif %}
+
+
+                <a
+                    href="{{ project['destination_url'] }}"
+                    class="button"
+                    style="display:inline-block; margin-top:12px;"
+                >
+                    Cancelar
+                </a>
+
+
+                <p
+                    id="status"
+                    style="
+                        margin-top:20px;
+                        color:#6b7280;
+                        font-size:14px;
+                    "
+                ></p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+<script>
+
+async function shareLocation() {
+
+    const status = document.getElementById("status");
+
+    if (!navigator.geolocation) {
+
+        status.textContent =
+            "Seu navegador não oferece suporte à localização.";
+
+        return;
+    }
+
+
+    status.textContent =
+        "Solicitando permissão de localização...";
+
+
+    navigator.geolocation.getCurrentPosition(
+
+        async function(position) {
+
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            const accuracy = position.coords.accuracy;
+
+
+            status.textContent =
+                "Localização obtida. Registrando acesso...";
+
+
+            try {
+
+                const response = await fetch(
+                    "/p/{{ project['slug'] }}/location",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            consent_given: 1,
+                            latitude: latitude,
+                            longitude: longitude,
+                            accuracy: accuracy
+                        })
+                    }
+                );
+
+
+                if (response.ok) {
+
+                    const data = await response.json();
+
+                    window.location.href = data.redirect_url;
+
+                } else {
+
+                    status.textContent =
+                        "Não foi possível registrar a localização.";
+
+                }
+
+            } catch (error) {
+
+                status.textContent =
+                    "Erro de comunicação com o servidor.";
+
+            }
+
+        },
+
+
+        async function(error) {
+
+            let errorMessage = "Não foi possível obter sua localização.";
+
+            if (error.code === 1) {
+                errorMessage = "Permissão de localização recusada.";
+            }
+
+            if (error.code === 2) {
+                errorMessage = "Localização indisponível.";
+            }
+
+            if (error.code === 3) {
+                errorMessage = "Tempo esgotado ao obter localização.";
+            }
+
+
+            status.textContent = errorMessage;
+
+
+            // Registra consentimento, mas falha na localização
+
+            try {
+
+                const response = await fetch(
+                    "/p/{{ project['slug'] }}/location-error",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            consent_given: 1,
+                            location_error: errorMessage
+                        })
+                    }
+                );
+
+
+                if (response.ok) {
+
+                    const data = await response.json();
+
+                    setTimeout(function() {
+                        window.location.href = data.redirect_url;
+                    }, 1200);
+
+                }
+
+            } catch (error) {
+
+                console.error(error);
+
+            }
+
+        }
+
+    );
+
+}
+
+</script>
+
+</body>
+</html>
+
+

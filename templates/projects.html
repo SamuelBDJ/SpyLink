@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Spy-Link | Projetos</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+    <header class="topbar">
+        <div class="logo">Spy-Link</div>
+
+        <nav>
+            <a href="/">Dashboard</a>
+            <a href="/projects">Projetos / Capturas / Meus Links</a>
+        </nav>
+    </header>
+
+    <main class="container">
+
+        <section class="welcome">
+            <div>
+                <h1>Projetos</h1>
+                <p>Gerencie seus links e projetos.</p>
+            </div>
+
+            <a href="/projects/new" class="button">
+                + Criar novo projeto
+            </a>
+        </section>
+
+
+        <section class="panel">
+
+            <div class="panel-header">
+                <div>
+                    <h2>Meus projetos</h2>
+                    <p>Projetos cadastrados na plataforma.</p>
+                </div>
+            </div>
+
+
+            {% if projects %}
+
+            <div style="overflow-x: auto;">
+
+                <table style="width:100%; border-collapse:collapse;">
+
+                    <thead>
+                        <tr style="text-align:left; border-bottom:1px solid #e5e7eb;">
+
+                            <th style="padding:16px 24px;">Projeto</th>
+                            <th style="padding:16px 24px;">Slug</th>
+                            <th style="padding:16px 24px;">Destino</th>
+                            <th style="padding:16px 24px;">Status</th>
+                            <th style="padding:16px 24px;">Localização</th>
+                            <th style="padding:16px 24px;">Criado em</th>
+                            <th style="padding:16px 24px;">Ações</th>
+
+                        </tr>
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for project in projects %}
+
+                        <tr style="border-bottom:1px solid #f1f5f9;">
+
+                            <td style="padding:18px 24px;">
+
+                                <strong>{{ project["name"] }}</strong>
+
+                                {% if project["description"] %}
+                                <div style="font-size:12px; color:#6b7280; margin-top:4px;">
+                                    {{ project["description"] }}
+                                </div>
+                                {% endif %}
+
+                            </td>
+
+
+                            <td style="padding:18px 24px;">
+
+                                <code>{{ project["slug"] }}</code>
+
+                            </td>
+
+
+                            <td style="padding:18px 24px;">
+
+                                <a
+                                    href="{{ project['destination_url'] }}"
+                                    target="_blank"
+                                    style="color:#2563eb; text-decoration:none;"
+                                >
+                                    Abrir destino ↗
+                                </a>
+
+                            </td>
+
+
+                            <td style="padding:18px 24px;">
+
+                                {% if project["active"] %}
+                                    <span style="color:#16a34a; font-weight:bold;">
+                                        ● Ativo
+                                    </span>
+                                {% else %}
+                                    <span style="color:#dc2626; font-weight:bold;">
+                                        ● Inativo
+                                    </span>
+                                {% endif %}
+
+                            </td>
+
+
+                            <td style="padding:18px 24px;">
+
+                                {% if project["location_enabled"] %}
+                                    <span style="color:#2563eb;">
+                                        Ativada
+                                    </span>
+                                {% else %}
+                                    <span style="color:#6b7280;">
+                                        Desativada
+                                    </span>
+                                {% endif %}
+
+                            </td>
+
+
+                            <td style="padding:18px 24px;">
+
+                                {{ project["created_at"] }}
+
+                            </td>
+
+
+                            <td style="padding:18px 24px;">
+
+                                <div style="display:flex; gap:8px;">
+				    <a
+				        href="/projects/{{ project['id'] }}"
+				        class="button"
+				        style="padding:8px 12px; font-size:12px;"
+				    >
+				        Detalhes
+				    </a>
+
+                                    <a
+                                        href="/projects/{{ project['id'] }}/edit"
+                                        class="button"
+                                        style="padding:8px 12px; font-size:12px;"
+                                    >
+                                        Editar
+                                    </a>
+
+                                    <form
+                                        method="post"
+                                        action="/projects/{{ project['id'] }}/delete"
+                                        onsubmit="return confirm('Tem certeza que deseja excluir este projeto?');"
+                                    >
+
+                                        <button
+                                            type="submit"
+                                            style="
+                                                background:#fee2e2;
+                                                color:#b91c1c;
+                                                border:0;
+                                                padding:8px 12px;
+                                                border-radius:8px;
+                                                cursor:pointer;
+                                                font-size:12px;
+                                                font-weight:bold;
+                                            "
+                                        >
+                                            Excluir
+                                        </button>
+
+                                    </form>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {% else %}
+
+            <div class="empty-state">
+
+                <div class="empty-icon">◎</div>
+
+                <h3>Nenhum projeto cadastrado</h3>
+
+                <p>
+                    Crie seu primeiro projeto para começar.
+                </p>
+
+            </div>
+
+            {% endif %}
+
+        </section>
+
+    </main>
+
+</body>
+</html>
+
+

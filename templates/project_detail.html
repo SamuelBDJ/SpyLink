@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Spy-Link | {{ project["name"] }}</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+    <header class="topbar">
+        <div class="logo">Spy-Link</div>
+
+        <nav>
+            <a href="/">Dashboard</a>
+            <a href="/projects">Projetos / Capturas / Meus Links</a>
+        </nav>
+    </header>
+
+
+    <main class="container">
+
+        <section class="welcome">
+
+            <div>
+                <h1>{{ project["name"] }}</h1>
+                <p>Detalhes e atividade deste projeto.</p>
+            </div>
+
+            <div style="display:flex; gap:10px;">
+
+                <a href="/projects" class="button">
+                    Voltar
+                </a>
+
+                <a
+                    href="/projects/{{ project['id'] }}/edit"
+                    class="button"
+                >
+                    Editar projeto
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- INFORMAÇÕES DO PROJETO -->
+
+        <section class="panel" style="margin-bottom:24px;">
+
+            <div class="panel-header">
+
+                <h2>Informações do projeto</h2>
+
+                <p>Configurações e endereço público.</p>
+
+            </div>
+
+
+            <div style="padding:24px;">
+
+                <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:24px;">
+
+                    <div>
+                        <span class="card-label">Nome</span>
+                        <strong>{{ project["name"] }}</strong>
+                    </div>
+
+                    <div>
+                        <span class="card-label">Slug</span>
+                        <code>{{ project["slug"] }}</code>
+                    </div>
+
+                    <div>
+                        <span class="card-label">URL de destino</span>
+
+                        <a
+                            href="{{ project['destination_url'] }}"
+                            target="_blank"
+                        >
+                            {{ project["destination_url"] }}
+                        </a>
+                    </div>
+
+                    <div>
+                        <span class="card-label">Status</span>
+
+                        {% if project["active"] %}
+                            <span style="color:#16a34a; font-weight:bold;">
+                                ● Ativo
+                            </span>
+                        {% else %}
+                            <span style="color:#dc2626; font-weight:bold;">
+                                ● Inativo
+                            </span>
+                        {% endif %}
+                    </div>
+
+                </div>
+
+
+                <div style="margin-top:24px;">
+
+                    <span class="card-label">Link público</span>
+
+                    <div style="
+                        background:#f3f4f6;
+                        padding:14px;
+                        border-radius:8px;
+                        font-family:monospace;
+                        word-break:break-all;
+                    ">
+                        {{ public_url }}
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ESTATÍSTICAS -->
+
+        <section class="stats">
+
+            <div class="card">
+                <span class="card-label">Total de acessos</span>
+                <strong>{{ total_accesses }}</strong>
+            </div>
+
+            <div class="card">
+                <span class="card-label">Consentimentos</span>
+                <strong>{{ total_consents }}</strong>
+            </div>
+
+            <div class="card">
+                <span class="card-label">Criado em</span>
+                <strong style="font-size:18px;">
+                    {{ project["created_at"] }}
+                </strong>
+            </div>
+
+        </section>
+
+
+        <!-- ACESSOS -->
+
+        <section class="panel">
+
+            <div class="panel-header">
+
+                <h2>Acessos registrados</h2>
+
+                <p>Eventos associados a este projeto.</p>
+
+            </div>
+
+
+            {% if access_logs %}
+
+            <div style="overflow-x:auto;">
+
+                <table style="width:100%; border-collapse:collapse;">
+
+                    <thead>
+
+                        <tr style="text-align:left; border-bottom:1px solid #e5e7eb;">
+
+                            <th style="padding:16px 24px;">ID</th>
+                            <th style="padding:16px 24px;">Consentimento</th>
+                            <th style="padding:16px 24px;">User-Agent</th>
+                            <th style="padding:16px 24px;">Data/Hora</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for log in access_logs %}
+
+                        <tr style="border-bottom:1px solid #f1f5f9;">
+
+                            <td style="padding:16px 24px;">
+                                {{ log["id"] }}
+                            </td>
+
+                            <td style="padding:16px 24px;">
+
+                                {% if log["consent_given"] %}
+                                    <span style="color:#16a34a; font-weight:bold;">
+                                        Sim
+                                    </span>
+                                {% else %}
+                                    <span style="color:#6b7280;">
+                                        Não
+                                    </span>
+                                {% endif %}
+
+                            </td>
+
+                            <td style="
+                                padding:16px 24px;
+                                max-width:400px;
+                                word-break:break-word;
+                                font-size:12px;
+                                color:#6b7280;
+                            ">
+                                {{ log["user_agent"] or "Não informado" }}
+                            </td>
+
+                            <td style="padding:16px 24px;">
+                                {{ log["created_at"] }}
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {% else %}
+
+            <div class="empty-state">
+
+                <div class="empty-icon">◎</div>
+
+                <h3>Nenhum acesso registrado</h3>
+
+                <p>
+                    Os acessos deste projeto aparecerão aqui.
+                </p>
+
+            </div>
+
+            {% endif %}
+
+        </section>
+
+    </main>
+
+</body>
+</html>
+
+

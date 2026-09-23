@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Spy-Link | Dashboard</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+    <header class="topbar">
+        <div class="logo">Spy-Link</div>
+
+        <nav>
+            <a href="/">Dashboard</a>
+            <a href="/projects">Projetos / Capturas / Meus Links</a>
+        </nav>
+    </header>
+
+    <main class="container">
+
+        <section class="welcome">
+            <div>
+                <h1>Dashboard</h1>
+                <p>Visão geral dos seus links e acessos.</p>
+            </div>
+
+            <a href="/projects/new" class="button">
+                + Criar novo Link / Projeto
+            </a>
+        </section>
+
+
+        <section class="stats">
+
+            <div class="card">
+                <span class="card-label">Projetos ativos</span>
+                <strong>{{ active_projects }}</strong>
+            </div>
+
+            <div class="card">
+                <span class="card-label">Total de acessos</span>
+                <strong>{{ total_accesses }}</strong>
+            </div>
+
+            <div class="card">
+                <span class="card-label">Localizações compartilhadas</span>
+                <strong>{{ shared_locations }}</strong>
+            </div>
+
+        </section>
+
+
+        <section class="panel">
+
+            <div class="panel-header">
+                <div>
+                    <h2>Acessos recentes</h2>
+                    <p>As atividades mais recentes dos seus projetos.</p>
+                </div>
+            </div>
+
+            <div class="empty-state">
+                <div class="empty-icon">◎</div>
+
+                <h3>Nenhum acesso registrado</h3>
+
+                <p>
+                    Quando alguém acessar um dos seus links,
+                    os registros aparecerão aqui.
+                </p>
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+</html>
+
+
